@@ -1,4 +1,4 @@
-package com.example.rqchallenge.model.external;
+package com.example.rqchallenge.model.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

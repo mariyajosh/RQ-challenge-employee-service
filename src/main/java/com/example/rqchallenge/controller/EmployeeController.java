@@ -1,9 +1,9 @@
 package com.example.rqchallenge.controller;
 
 import com.example.rqchallenge.exception.EntityDoesNotExistException;
-import com.example.rqchallenge.model.Employee;
-import com.example.rqchallenge.model.Employees;
-import com.example.rqchallenge.model.response.*;
+import com.example.rqchallenge.model.business.Employee;
+import com.example.rqchallenge.model.business.Employees;
+import com.example.rqchallenge.model.web.response.*;
 import com.example.rqchallenge.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,7 @@ public class EmployeeController implements IEmployeeController{
 
     @Override
     public ResponseEntity<TopNEmployeeNames> getTopTenHighestEarningEmployeeNames(){
-        return ResponseEntity.ok(employeeService.getTopNHighestEarningEmployee());
+        return ResponseEntity.ok(employeeService.getTopNHighestEarningEmployee(10));
     }
 
     @Override

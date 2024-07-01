@@ -1,12 +1,12 @@
 package com.example.rqchallenge.service;
 
 import com.example.rqchallenge.exception.EntityDoesNotExistException;
-import com.example.rqchallenge.model.Employee;
-import com.example.rqchallenge.model.Employees;
-import com.example.rqchallenge.model.response.DeleteEmployeeResponse;
-import com.example.rqchallenge.model.response.EmployeeName;
-import com.example.rqchallenge.model.response.TopNEmployeeNames;
-import com.example.rqchallenge.service.external.EmployeeDetailsService;
+import com.example.rqchallenge.model.business.Employee;
+import com.example.rqchallenge.model.business.Employees;
+import com.example.rqchallenge.model.web.response.DeleteEmployeeResponse;
+import com.example.rqchallenge.model.web.response.EmployeeName;
+import com.example.rqchallenge.model.web.response.TopNEmployeeNames;
+import com.example.rqchallenge.service.client.EmployeeDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -47,11 +47,11 @@ public class EmployeeService {
         return employeeDetailsService.createEmployee(employeeInput);
     }
 
-    public TopNEmployeeNames getTopNHighestEarningEmployee() {
+    public TopNEmployeeNames getTopNHighestEarningEmployee(int N) {
         Employees employees = employeeDetailsService.getAllEmployees();
         List<EmployeeName> employeeNameList = employees.getEmployeeList().stream()
                 .sorted(Comparator.comparing(Employee::getSalary, Comparator.reverseOrder()))
-                .limit(10)
+                .limit(N)
                 .map(employee -> new EmployeeName(employee.getName()))
                 .collect(Collectors.toList());
         return new TopNEmployeeNames(employeeNameList);

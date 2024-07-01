@@ -1,4 +1,4 @@
-package com.example.rqchallenge.model.response;
+package com.example.rqchallenge.model.web.response;
 
 
 import lombok.AllArgsConstructor;

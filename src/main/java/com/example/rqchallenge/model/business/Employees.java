@@ -1,7 +1,7 @@
-package com.example.rqchallenge.model;
+package com.example.rqchallenge.model.business;
 
-import com.example.rqchallenge.model.response.EmployeeDetails;
-import com.example.rqchallenge.model.response.GetAllEmployeeApiResponse;
+import com.example.rqchallenge.model.web.response.EmployeeDetails;
+import com.example.rqchallenge.model.web.response.GetAllEmployeeApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

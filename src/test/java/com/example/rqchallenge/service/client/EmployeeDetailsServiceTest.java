@@ -1,17 +1,22 @@
-package com.example.rqchallenge.service.external;
+package com.example.rqchallenge.service.client;
 
 import com.example.rqchallenge.config.properties.ExternalServiceResourceProperties;
-import com.example.rqchallenge.model.Employee;
-import com.example.rqchallenge.model.Employees;
+import com.example.rqchallenge.model.business.Employee;
+import com.example.rqchallenge.model.business.Employees;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
 
+@SpringBootTest
 class EmployeeDetailsServiceTest {
 
     private final ExternalServiceResourceProperties externalServiceResourceProperties = Mockito.mock(ExternalServiceResourceProperties.class);

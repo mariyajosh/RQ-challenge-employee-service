@@ -1,7 +1,7 @@
 package com.example.rqchallenge.controller;
 
 import com.example.rqchallenge.exception.EntityDoesNotExistException;
-import com.example.rqchallenge.model.response.*;
+import com.example.rqchallenge.model.web.response.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

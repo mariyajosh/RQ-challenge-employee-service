@@ -1,7 +1,7 @@
 package com.example.rqchallenge.controller;
 
-import com.example.rqchallenge.model.Employee;
-import com.example.rqchallenge.model.Employees;
+import com.example.rqchallenge.model.business.Employee;
+import com.example.rqchallenge.model.business.Employees;
 import com.example.rqchallenge.service.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

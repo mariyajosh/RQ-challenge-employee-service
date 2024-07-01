@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/employee-service")
@@ -35,8 +36,8 @@ public class EmployeeController implements IEmployeeController{
 
     @Override
     public ResponseEntity<GetEmployeeByIdResponse> getEmployeeById(String id) {
-        Employee employeesById = employeeService.getEmployeesById(id);
-        return ResponseEntity.ok(new GetEmployeeByIdResponse(employeesById.toEmployeeDetails()));
+        Optional<Employee> employeesById = employeeService.getEmployeesById(id);
+        return ResponseEntity.ok(new GetEmployeeByIdResponse(employeesById.map(Employee::toEmployeeDetails).orElse(null)));
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -28,8 +29,8 @@ class EmployeeServiceTest {
 
     @Test
     void shouldReturnExpectedResponseAfterInvokingEmployeeDetailsService(){
-        Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(List.of(new Employee(1, "Peter", 27, 1899877))));
-        Employees expectedEmployees = new Employees(List.of(new Employee(1, "Peter", 27, 1899877)));
+        Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(List.of(new Employee("1", "Peter", 27, 1899877))));
+        Employees expectedEmployees = new Employees(List.of(new Employee("1", "Peter", 27, 1899877)));
 
         Employees actualEmployees = employeeService.getEmployees();
 
@@ -39,11 +40,11 @@ class EmployeeServiceTest {
     @Test
     void shouldReturnAllEmployeesIfSearchTokenMatchesName(){
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(
-                List.of(new Employee(1, "Peter", 27, 1899877),
-                        new Employee(2, "John", 27, 289987),
-                        new Employee(3, "Mark", 27, 1899877)
+                List.of(new Employee("1", "Peter", 27, 1899877),
+                        new Employee("2", "John", 27, 289987),
+                        new Employee("3", "Mark", 27, 1899877)
                 )));
-        Employees expectedEmployees = new Employees(List.of(new Employee(2, "John", 27, 289987)));
+        Employees expectedEmployees = new Employees(List.of(new Employee("2", "John", 27, 289987)));
 
         Employees actualEmployees = employeeService.getEmployeesByNameSearch("John");
 
@@ -53,11 +54,11 @@ class EmployeeServiceTest {
     @Test
     void shouldReturnAllEmployeesIfSearchTokenMatchesNameByIgnoringCaseSensitive(){
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(
-                List.of(new Employee(1, "Peter", 27, 1899877),
-                        new Employee(2, "John", 27, 289987),
-                        new Employee(3, "Mark", 27, 1899877)
+                List.of(new Employee("1", "Peter", 27, 1899877),
+                        new Employee("2", "John", 27, 289987),
+                        new Employee("3", "Mark", 27, 1899877)
                 )));
-        Employees expectedEmployees = new Employees(List.of(new Employee(2, "John", 27, 289987)));
+        Employees expectedEmployees = new Employees(List.of(new Employee("2", "John", 27, 289987)));
 
         Employees actualEmployees = employeeService.getEmployeesByNameSearch("john");
 
@@ -67,14 +68,14 @@ class EmployeeServiceTest {
     @Test
     void shouldReturnAllEmployeesIfSearchTokenContainsInNameByIgnoringCaseSensitive(){
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(
-                List.of(new Employee(1, "Peter", 27, 1899877),
-                        new Employee(2, "John", 27, 289987),
-                        new Employee(3, "Josh", 27, 289987),
-                        new Employee(4, "Mark", 27, 1899877)
+                List.of(new Employee("1", "Peter", 27, 1899877),
+                        new Employee("2", "John", 27, 289987),
+                        new Employee("3", "Josh", 27, 289987),
+                        new Employee("4", "Mark", 27, 1899877)
                 )));
         Employees expectedEmployees = new Employees(List.of(
-                new Employee(2, "John", 27, 289987),
-                new Employee(3, "Josh", 27, 289987)));
+                new Employee("2", "John", 27, 289987),
+                new Employee("3", "Josh", 27, 289987)));
 
         Employees actualEmployees = employeeService.getEmployeesByNameSearch("jo");
 
@@ -83,31 +84,31 @@ class EmployeeServiceTest {
 
     @Test
     void shouldReturnEmployeeIfThereExistEmployeeWithId(){
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(new Employee(2, "John", 27, 289987));
+        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.of(new Employee("2", "John", 27, 289987)));
 
-        Employee employeesById = employeeService.getEmployeesById("1");
+        Optional<Employee> employeesById = employeeService.getEmployeesById("1");
 
         Mockito.verify(employeeDetailsService, Mockito.times(1)).getEmployeeById("1");
-        Assertions.assertEquals(employeesById, new Employee(2, "John", 27, 289987));
+        Assertions.assertEquals(employeesById, Optional.of(new Employee("2", "John", 27, 289987)));
     }
 
     @Test
-    void shouldReturnNullIfThereExistNoEmployeeWithId(){
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(null);
+    void shouldReturnOptionalOfEmptyIfThereExistNoEmployeeWithId(){
+        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.empty());
 
-        Employee employeesById = employeeService.getEmployeesById("1");
+        Optional<Employee> employeesById = employeeService.getEmployeesById("1");
 
         Mockito.verify(employeeDetailsService, Mockito.times(1)).getEmployeeById("1");
-        Assertions.assertNull(employeesById);
+        Assertions.assertEquals(Optional.empty(), employeesById);
     }
 
     @Test
     void shouldGetHighestSalaryOfEmployees(){
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(
-                List.of(new Employee(1, "Peter", 27, 189987),
-                        new Employee(2, "John", 27, 289987),
-                        new Employee(3, "Josh", 27, 239987),
-                        new Employee(4, "Mark", 27, 1899877)
+                List.of(new Employee("1", "Peter", 27, 189987),
+                        new Employee("2", "John", 27, 289987),
+                        new Employee("3", "Josh", 27, 239987),
+                        new Employee("4", "Mark", 27, 1899877)
                 )));
 
         int highestSalaryOfEmployees = employeeService.getHighestSalaryOfEmployees();
@@ -127,10 +128,10 @@ class EmployeeServiceTest {
     @Test
     void shouldReturnTopNHighestSalariedEmployees(){
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(
-                List.of(new Employee(1, "Peter", 27, 1002),
-                        new Employee(2, "John", 27, 1001),
-                        new Employee(3, "Josh", 27, 1004),
-                        new Employee(4, "Mark", 27, 1003)
+                List.of(new Employee("1", "Peter", 27, 1002),
+                        new Employee("2", "John", 27, 1001),
+                        new Employee("3", "Josh", 27, 1004),
+                        new Employee("4", "Mark", 27, 1003)
                 )));
         List<EmployeeName> employeeNames = List.of(new EmployeeName("Josh"), new EmployeeName("Mark"));
         TopNEmployeeNames expectedResponse = new TopNEmployeeNames(employeeNames);
@@ -143,15 +144,15 @@ class EmployeeServiceTest {
 
     @Test
     void shouldGetEntityDoesNotExistExceptionIdThereIsNoEmployeeExistToWhilePerformingDelete(){
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(null);
+        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.empty());
 
         Assertions.assertThrows(EntityDoesNotExistException.class, () -> employeeService.deleteEmployee("1"));
     }
 
     @Test
     void shouldDeleteEmployeeSuccessfully() throws EntityDoesNotExistException {
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(new Employee(1, "Peter", 27, 78734));
-        DeleteEmployeeResponse expectedResponse = new DeleteEmployeeResponse("Peter");
+        Mockito.when(employeeDetailsService.deleteEmployee("1")).thenReturn("Success");
+        DeleteEmployeeResponse expectedResponse = new DeleteEmployeeResponse("Success");
 
         DeleteEmployeeResponse deleteEmployeeResponse = employeeService.deleteEmployee("1");
 

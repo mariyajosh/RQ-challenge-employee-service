@@ -14,6 +14,7 @@ public class EmployeeByIdDTO {
     private EmployeeDTO employeeDTO;
 
     public Employee toEmployee(){
+        if(employeeDTO == null) return null;
         return this.employeeDTO.toEmployee();
     }
 }

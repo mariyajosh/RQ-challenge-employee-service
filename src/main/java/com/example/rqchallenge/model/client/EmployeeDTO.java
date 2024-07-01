@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EmployeeDTO {
-    private int id;
+    private String id;
     @JsonProperty(value = "employee_name")
     private String name;
     @JsonProperty(value = "employee_age")

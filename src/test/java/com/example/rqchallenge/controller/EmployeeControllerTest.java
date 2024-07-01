@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,8 +40,8 @@ class EmployeeControllerTest {
 
     @Test
     void shouldGet2xxResponseWhileGettingAllEmployees() throws Exception {
-        List<Employee> employees = List.of(new Employee(1, "Peter", 27, 8937313),
-                new Employee(2, "Peter", 26, 7937313));
+        List<Employee> employees = List.of(new Employee("1", "Peter", 27, 8937313),
+                new Employee("2", "Peter", 26, 7937313));
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(employees));
         mockMvc.perform(MockMvcRequestBuilders.get(EMPLOYEE_SERVICE_BASE_URL + GET_ALL_EMPLOYEES_URI))
                 .andExpect(status().isOk())
@@ -49,9 +50,9 @@ class EmployeeControllerTest {
 
     @Test
     void shouldReturn2xxWhileSearchingEmployeesByName() throws Exception {
-        List<Employee> employees = List.of(new Employee(1, "Peter", 27, 8937313),
-                new Employee(2, "peter asc", 27, 837313),
-                new Employee(2, "John", 26, 7937313));
+        List<Employee> employees = List.of(new Employee("1", "Peter", 27, 8937313),
+                new Employee("2", "peter asc", 27, 837313),
+                new Employee("3", "John", 26, 7937313));
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(employees));
         mockMvc.perform(MockMvcRequestBuilders.get(EMPLOYEE_SERVICE_BASE_URL + SEARCH_EMPLOYEE_BY_NAME, "peter"))
                 .andExpect(status().isOk())
@@ -62,8 +63,8 @@ class EmployeeControllerTest {
 
     @Test
     void shouldReturn2xxResponseWithEmployeeWhileFindingEmployeeById() throws Exception {
-        Employee employee = new Employee(1, "Peter", 27, 8937313);
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(employee);
+        Employee employee = new Employee("1", "Peter", 27, 8937313);
+        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.of(employee));
         mockMvc.perform(MockMvcRequestBuilders.get(EMPLOYEE_SERVICE_BASE_URL + SEARCH_EMPLOYEE_BY_ID, 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.employeeDetails.name", is("Peter")));
@@ -71,10 +72,10 @@ class EmployeeControllerTest {
 
     @Test
     void shouldReturn2xxResponseWithHighestSalaryOfEmployee() throws Exception {
-        List<Employee> employees = List.of(new Employee(1, "Peter", 27, 1000),
-                new Employee(2, "John", 26, 1001),
-                new Employee(3, "Jack", 26, 1002),
-                new Employee(4, "Marco", 26, 1004));
+        List<Employee> employees = List.of(new Employee("1", "Peter", 27, 1000),
+                new Employee("2", "John", 26, 1001),
+                new Employee("3", "Jack", 26, 1002),
+                new Employee("4", "Marco", 26, 1004));
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(employees));
         mockMvc.perform(MockMvcRequestBuilders.get(EMPLOYEE_SERVICE_BASE_URL + HIGHEST_SALARY_OF_EMPLOYEES))
                 .andExpect(status().isOk())
@@ -83,10 +84,10 @@ class EmployeeControllerTest {
 
     @Test
     void shouldReturn2xxResponseWithTopTenEmployeesWithHighestSalary() throws Exception {
-        List<Employee> employees = List.of(new Employee(1, "Peter", 27, 1000),
-                new Employee(2, "John", 26, 1001),
-                new Employee(3, "Jack", 26, 1002),
-                new Employee(4, "Marco", 26, 1004));
+        List<Employee> employees = List.of(new Employee("1", "Peter", 27, 1000),
+                new Employee("2", "John", 26, 1001),
+                new Employee("3", "Jack", 26, 1002),
+                new Employee("4", "Marco", 26, 1004));
         Mockito.when(employeeDetailsService.getAllEmployees()).thenReturn(new Employees(employees));
         mockMvc.perform(MockMvcRequestBuilders.get(EMPLOYEE_SERVICE_BASE_URL + TOP_TEN_EMPLOYEES_WITH_HIGHEST_SALARY))
                 .andExpect(status().isOk())
@@ -111,14 +112,14 @@ class EmployeeControllerTest {
 
     @Test
     void shouldReturn400BadRequestOnDeletingTheEntityWhichDoesNotExist() throws Exception {
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(null);
+        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.empty());
         mockMvc.perform(MockMvcRequestBuilders.delete(EMPLOYEE_SERVICE_BASE_URL + DELETE_EMPLOYEE, "1"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void shouldReturn2xxStatusCodeWithDeletedEmployeeName() throws Exception {
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(new Employee(1, "Peter", 27, 1000));
+        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.of(new Employee("1", "Peter", 27, 1000)));
         mockMvc.perform(MockMvcRequestBuilders.delete(EMPLOYEE_SERVICE_BASE_URL + DELETE_EMPLOYEE, "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.employeeName", is("Peter")));

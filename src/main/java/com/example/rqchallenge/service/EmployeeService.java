@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -33,7 +34,8 @@ public class EmployeeService {
         return new Employees(employeeListByName);
     }
 
-    public Employee getEmployeesById(String id) {
+    public Optional<Employee> getEmployeesById(String id) {
+
         return employeeDetailsService.getEmployeeById(id);
     }
 
@@ -58,11 +60,7 @@ public class EmployeeService {
     }
 
     public DeleteEmployeeResponse deleteEmployee(String id) throws EntityDoesNotExistException {
-        Employee employeesById = getEmployeesById(id);
-        if(employeesById == null){
-            throw new EntityDoesNotExistException(String.format("Employee with id %s does not exist", id));
-        }
-        employeeDetailsService.deleteEmployee(id);
-        return new DeleteEmployeeResponse(employeesById.getName());
+        String deletionOperationStatus = employeeDetailsService.deleteEmployee(id);
+        return new DeleteEmployeeResponse(deletionOperationStatus);
     }
 }

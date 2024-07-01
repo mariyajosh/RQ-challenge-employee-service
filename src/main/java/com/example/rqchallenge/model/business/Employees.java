@@ -5,6 +5,7 @@ import com.example.rqchallenge.model.web.response.GetAllEmployeeApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Getter
+@NoArgsConstructor
 public class Employees {
     private List<Employee> employeeList;
 

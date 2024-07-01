@@ -16,6 +16,7 @@ public class EmployeesDTO {
     private List<EmployeeDTO> employees;
 
     public Employees toEmployees() {
+        if(employees == null) return new Employees();
         List<Employee> employeeList = employees.stream().map(EmployeeDTO::toEmployee).collect(Collectors.toList());
         return new Employees(employeeList);
     }

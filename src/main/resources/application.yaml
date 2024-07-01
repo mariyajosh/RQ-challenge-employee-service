@@ -4,4 +4,6 @@ api:
     employees: /api/v1/employees
     employeeById: /api/v1/employee/{id}
     createEmployee: /api/v1/create
-    deleteEmployee: api/v1/delete/{id}
+    deleteEmployee: /api/v1/delete/{id}
+    retryDelay: 1000
+    maxRetryAttempts: 3

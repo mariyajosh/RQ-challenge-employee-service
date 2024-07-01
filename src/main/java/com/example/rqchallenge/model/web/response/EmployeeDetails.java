@@ -6,8 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class EmployeeDetails {
-    private int id;
+    private String id;
     private String name;
-    private int age;
-    private int salary;
+    private Integer age;
+    private Integer salary;
 }

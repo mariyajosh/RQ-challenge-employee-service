@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class DeleteEmployeeResponse {
-    private final String employeeName;
+    public class DeleteEmployeeResponse {
+    private final String status;
 }

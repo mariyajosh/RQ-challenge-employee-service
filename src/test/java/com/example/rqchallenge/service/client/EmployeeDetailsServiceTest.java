@@ -1,6 +1,7 @@
 package com.example.rqchallenge.service.client;
 
 import com.example.rqchallenge.config.properties.ExternalServiceResourceProperties;
+import com.example.rqchallenge.exception.ExternalServiceException;
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
 import okhttp3.mockwebserver.MockResponse;
@@ -10,19 +11,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 class EmployeeDetailsServiceTest {
 
-    private final ExternalServiceResourceProperties externalServiceResourceProperties = Mockito.mock(ExternalServiceResourceProperties.class);
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final EmployeeDetailsService employeeDetailsService = new EmployeeDetailsService(externalServiceResourceProperties, restTemplate);
+    @MockBean
+    private ExternalServiceResourceProperties externalServiceResourceProperties;
+    @Autowired
+    private EmployeeDetailsService employeeDetailsService;
     private static MockWebServer mockWebServer;
+
 
     @BeforeAll
     static void init() throws IOException {
@@ -48,8 +53,74 @@ class EmployeeDetailsServiceTest {
 
         Employees allEmployees = employeeDetailsService.getAllEmployees();
 
-        Assertions.assertEquals(allEmployees.getEmployeeList(), List.of(new Employee(1, "Tiger Nixon", 61, 320800)));
+        Assertions.assertEquals(allEmployees.getEmployeeList(), List.of(new Employee("1", "Tiger Nixon", 61, 320800)));
+    }
 
+    @Test
+    void shouldRetryIfThereIs503StatusFromExternalService(){
+        int port = mockWebServer.getPort();
+        Mockito.when(externalServiceResourceProperties.getBaseUrl()).thenReturn("http://localhost:"+port);
+        Mockito.when(externalServiceResourceProperties.getEmployees()).thenReturn("/employees");
+        MockResponse mockResponse = new MockResponse()
+                .addHeader("content-type", "application/json")
+                .setBody(sampleJsonBody())
+                .setResponseCode(200);
+        mockWebServer.enqueue(new MockResponse().setResponseCode(503));
+        mockWebServer.enqueue(mockResponse);
+
+        Employees allEmployees = employeeDetailsService.getAllEmployees();
+
+        Assertions.assertEquals(allEmployees.getEmployeeList(), List.of(new Employee("1", "Tiger Nixon", 61, 320800)));
+
+    }
+
+    @Test
+    void shouldThrowExternalServiceExceptionIfStatusCodeIs400FromExternalService(){
+        int port = mockWebServer.getPort();
+        Mockito.when(externalServiceResourceProperties.getBaseUrl()).thenReturn("http://localhost:"+port);
+        Mockito.when(externalServiceResourceProperties.getEmployees()).thenReturn("/employees");
+        mockWebServer.enqueue(new MockResponse().setResponseCode(400));
+
+       Assertions.assertThrows(ExternalServiceException.class, () -> employeeDetailsService.getAllEmployees());
+    }
+
+    @Test
+    void shouldReturnEmptyDtoIfBodyIfThereIsNoBodyFromExternalServiceWhileGettingAllEmployees(){
+        int port = mockWebServer.getPort();
+        Mockito.when(externalServiceResourceProperties.getBaseUrl()).thenReturn("http://localhost:"+port);
+        Mockito.when(externalServiceResourceProperties.getEmployees()).thenReturn("/employees");
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200));
+
+        Employees actualResponse = employeeDetailsService.getAllEmployees();
+
+        Assertions.assertEquals(new Employees(), actualResponse);
+    }
+
+    @Test
+    void shouldReturnOptionalOfEmployeeWhileGettingEmployeeById(){
+        int port = mockWebServer.getPort();
+        Mockito.when(externalServiceResourceProperties.getBaseUrl()).thenReturn("http://localhost:"+port);
+        Mockito.when(externalServiceResourceProperties.getEmployeeById()).thenReturn("/employees/1");
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(sampleEmployeeByIdResponse())
+                .addHeader("content-type", "application/json")
+                .setResponseCode(200));
+
+        Optional<Employee> employeeById = employeeDetailsService.getEmployeeById("1");
+
+        Assertions.assertEquals(Optional.of(new Employee("1", "Foo Bar", 61, 320800)), employeeById);
+    }
+
+    @Test
+    void shouldReturnOptionalOfEmptyIfThereIsNoBodyFromExternalServiceWhileGettingEmployeeById(){
+        int port = mockWebServer.getPort();
+        Mockito.when(externalServiceResourceProperties.getBaseUrl()).thenReturn("http://localhost:"+port);
+        Mockito.when(externalServiceResourceProperties.getEmployeeById()).thenReturn("/employees/1");
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200));
+
+        Optional<Employee> employeeById = employeeDetailsService.getEmployeeById("1");
+
+        Assertions.assertEquals(Optional.empty(), employeeById);
     }
 
     private String sampleJsonBody(){
@@ -63,6 +134,18 @@ class EmployeeDetailsServiceTest {
                 "            \"employee_age\": \"61\"\n" +
                 "            }\n" +
                 "        ]\n" +
+                "    }";
+    }
+
+    private String sampleEmployeeByIdResponse(){
+        return "{\n" +
+                "        \"status\": \"success\",\n" +
+                "        \"data\": {\n" +
+                "            \"id\": \"1\",\n" +
+                "            \"employee_name\": \"Foo Bar\",\n" +
+                "            \"employee_salary\": \"320800\",\n" +
+                "            \"employee_age\": \"61\"\n" +
+                "        }\n" +
                 "    }";
     }
 }

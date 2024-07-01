@@ -15,4 +15,6 @@ public class ExternalServiceResourceProperties {
     private String employeeById;
     private String createEmployee;
     private String deleteEmployee;
+    private Integer retryDelay;
+    private Integer maxRetryAttempts;
 }

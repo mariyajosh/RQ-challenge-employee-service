@@ -14,22 +14,22 @@ public interface IEmployeeController {
     @GetMapping("/employees")
     ResponseEntity<GetAllEmployeeApiResponse> getAllEmployees() throws IOException;
 
-    @GetMapping("/search/{searchString}")
+    @GetMapping("/employees/search/{searchString}")
     ResponseEntity<GetAllEmployeeApiResponse> getEmployeesByNameSearch(@PathVariable String searchString);
 
     @GetMapping("/employees/{id}")
     ResponseEntity<GetEmployeeByIdResponse> getEmployeeById(@PathVariable String id);
 
-    @GetMapping("/highestSalary")
+    @GetMapping("/employees/highestSalary")
     ResponseEntity<HighestSalaryOfAllEmployee> getHighestSalaryOfEmployees();
 
-    @GetMapping("/topTenHighestEarningEmployeeNames")
+    @GetMapping("/employees/topTenHighestEarningEmployeeNames")
     ResponseEntity<TopNEmployeeNames> getTopTenHighestEarningEmployeeNames();
 
-    @PostMapping()
+    @PostMapping("/employee")
     ResponseEntity<CreateEmployeeResponse> createEmployee(@RequestBody Map<String, Object> employeeInput);
 
-    @DeleteMapping("/{id}")
+        @DeleteMapping("/employees/{id}")
     ResponseEntity<DeleteEmployeeResponse> deleteEmployeeById(@PathVariable String id) throws EntityDoesNotExistException;
 
 }

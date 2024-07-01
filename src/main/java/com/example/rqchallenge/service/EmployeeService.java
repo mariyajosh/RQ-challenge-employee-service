@@ -39,7 +39,7 @@ public class EmployeeService {
 
     public int getHighestSalaryOfEmployees() {
         Employees employees = employeeDetailsService.getAllEmployees();
-        return employees.getEmployeeList().stream()
+            return employees.getEmployeeList().stream()
                 .mapToInt(Employee::getSalary).max().getAsInt();
     }
 

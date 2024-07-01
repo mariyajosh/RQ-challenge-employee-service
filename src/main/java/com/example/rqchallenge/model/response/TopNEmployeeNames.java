@@ -5,8 +5,8 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Getter
 @AllArgsConstructor
-public class GetAllApiResponse {
-    List<EmployeeDetails> employees;
+@Getter
+public class TopNEmployeeNames {
+    private List<EmployeeName> employeeNameList;
 }

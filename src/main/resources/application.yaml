@@ -1,0 +1,7 @@
+api:
+  external-service:
+    baseUrl: https://dummy.restapiexample.com
+    employees: /api/v1/employees
+    employeeById: /api/v1/employee/{id}
+    createEmployee: /api/v1/create
+    deleteEmployee: api/v1/delete/{id}

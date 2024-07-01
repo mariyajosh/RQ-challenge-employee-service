@@ -15,9 +15,11 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'javax.inject:javax.inject:1'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.10.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: '4.10.0'
 }
 
 test {

@@ -1,17 +1,16 @@
 package com.example.rqchallenge.controller;
 
+import com.example.rqchallenge.exception.EntityDoesNotExistException;
 import com.example.rqchallenge.model.Employee;
 import com.example.rqchallenge.model.Employees;
-import com.example.rqchallenge.model.response.GetAllApiResponse;
+import com.example.rqchallenge.model.response.*;
 import com.example.rqchallenge.service.EmployeeService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,39 +20,44 @@ public class EmployeeController implements IEmployeeController{
 
     private final EmployeeService employeeService;
     @Override
-    public ResponseEntity<GetAllApiResponse> getAllEmployees() {
+    public ResponseEntity<GetAllEmployeeApiResponse> getAllEmployees() {
         Employees employees = employeeService.getEmployees();
-        GetAllApiResponse response = employees.toGetAllAPIResponse();
+        GetAllEmployeeApiResponse response = employees.toGetAllAPIResponse();
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<List<Employee>> getEmployeesByNameSearch(String searchString) {
-        return null;
+    public ResponseEntity<GetAllEmployeeApiResponse> getEmployeesByNameSearch(String searchString) {
+        Employees employees = employeeService.getEmployeesByNameSearch(searchString);
+        GetAllEmployeeApiResponse response = employees.toGetAllAPIResponse();
+        return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<Employee> getEmployeeById(String id) {
-        return null;
+    public ResponseEntity<GetEmployeeByIdResponse> getEmployeeById(String id) {
+        Employee employeesById = employeeService.getEmployeesById(id);
+        return ResponseEntity.ok(new GetEmployeeByIdResponse(employeesById.toEmployeeDetails()));
     }
 
     @Override
-    public ResponseEntity<Integer> getHighestSalaryOfEmployees() {
-        return null;
+    public ResponseEntity<HighestSalaryOfAllEmployee> getHighestSalaryOfEmployees() {
+        int highestSalaryOfAllEmployees = employeeService.getHighestSalaryOfEmployees();
+        return ResponseEntity.ok(new HighestSalaryOfAllEmployee(highestSalaryOfAllEmployees));
     }
 
     @Override
-    public ResponseEntity<List<String>> getTopTenHighestEarningEmployeeNames() {
-        return null;
+    public ResponseEntity<TopNEmployeeNames> getTopTenHighestEarningEmployeeNames(){
+        return ResponseEntity.ok(employeeService.getTopNHighestEarningEmployee());
     }
 
     @Override
-    public ResponseEntity<Employee> createEmployee(Map<String, Object> employeeInput) {
-        return null;
+    public ResponseEntity<CreateEmployeeResponse> createEmployee(Map<String, Object> employeeInput) {
+        String creationStatus = employeeService.createEmployee(employeeInput);
+        return new ResponseEntity<>(new CreateEmployeeResponse(creationStatus), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<String> deleteEmployeeById(String id) {
-        return null;
+    public ResponseEntity<DeleteEmployeeResponse> deleteEmployeeById(String id) throws EntityDoesNotExistException {
+        return ResponseEntity.ok(employeeService.deleteEmployee(id));
     }
 }

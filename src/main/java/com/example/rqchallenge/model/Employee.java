@@ -2,10 +2,12 @@ package com.example.rqchallenge.model;
 
 import com.example.rqchallenge.model.response.EmployeeDetails;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class Employee {
     private int id;
     private String name;

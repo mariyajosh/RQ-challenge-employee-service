@@ -111,17 +111,10 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void shouldReturn400BadRequestOnDeletingTheEntityWhichDoesNotExist() throws Exception {
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.empty());
-        mockMvc.perform(MockMvcRequestBuilders.delete(EMPLOYEE_SERVICE_BASE_URL + DELETE_EMPLOYEE, "1"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void shouldReturn2xxStatusCodeWithDeletedEmployeeName() throws Exception {
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.of(new Employee("1", "Peter", 27, 1000)));
+        Mockito.when(employeeDetailsService.deleteEmployee("1")).thenReturn("Success");
         mockMvc.perform(MockMvcRequestBuilders.delete(EMPLOYEE_SERVICE_BASE_URL + DELETE_EMPLOYEE, "1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.employeeName", is("Peter")));
+                .andExpect(jsonPath("$.status", is("Success")));
     }
 }

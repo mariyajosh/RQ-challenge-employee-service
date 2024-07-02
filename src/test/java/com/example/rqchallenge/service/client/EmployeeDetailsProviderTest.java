@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-class EmployeeDetailsServiceTest {
+class EmployeeDetailsProviderTest {
 
     @MockBean
     private ExternalServiceResourceProperties externalServiceResourceProperties;
     @Autowired
-    private EmployeeDetailsService employeeDetailsService;
+    private EmployeeDetailsProvider employeeDetailsProvider;
     private static MockWebServer mockWebServer;
 
 
@@ -49,7 +49,7 @@ class EmployeeDetailsServiceTest {
                 .setResponseCode(200);
         mockWebServer.enqueue(mockResponse);
 
-        Employees allEmployees = employeeDetailsService.getAllEmployees();
+        Employees allEmployees = employeeDetailsProvider.getAllEmployees();
 
         Assertions.assertEquals(allEmployees.getEmployeeList(), List.of(new Employee("1", "Tiger Nixon", 61, 320800)));
     }
@@ -61,7 +61,7 @@ class EmployeeDetailsServiceTest {
         Mockito.when(externalServiceResourceProperties.getEmployees()).thenReturn("/employees");
         mockWebServer.enqueue(new MockResponse().setResponseCode(400));
 
-       Assertions.assertThrows(ExternalServiceException.class, () -> employeeDetailsService.getAllEmployees());
+       Assertions.assertThrows(ExternalServiceException.class, () -> employeeDetailsProvider.getAllEmployees());
     }
 
     @Test
@@ -71,7 +71,7 @@ class EmployeeDetailsServiceTest {
         Mockito.when(externalServiceResourceProperties.getEmployees()).thenReturn("/employees");
         mockWebServer.enqueue(new MockResponse().setResponseCode(200));
 
-        Employees actualResponse = employeeDetailsService.getAllEmployees();
+        Employees actualResponse = employeeDetailsProvider.getAllEmployees();
 
         Assertions.assertEquals(new Employees(), actualResponse);
     }
@@ -86,7 +86,7 @@ class EmployeeDetailsServiceTest {
                 .addHeader("content-type", "application/json")
                 .setResponseCode(200));
 
-        Optional<Employee> employeeById = employeeDetailsService.getEmployeeById("1");
+        Optional<Employee> employeeById = employeeDetailsProvider.getEmployeeById("1");
 
         Assertions.assertEquals(Optional.of(new Employee("1", "Foo Bar", 61, 320800)), employeeById);
     }
@@ -98,7 +98,7 @@ class EmployeeDetailsServiceTest {
         Mockito.when(externalServiceResourceProperties.getEmployeeById()).thenReturn("/employees/1");
         mockWebServer.enqueue(new MockResponse().setResponseCode(200));
 
-        Optional<Employee> employeeById = employeeDetailsService.getEmployeeById("1");
+        Optional<Employee> employeeById = employeeDetailsProvider.getEmployeeById("1");
 
         Assertions.assertEquals(Optional.empty(), employeeById);
     }
@@ -122,7 +122,7 @@ class EmployeeDetailsServiceTest {
             mockWebServer.enqueue(new MockResponse().setResponseCode(503));
             mockWebServer.enqueue(mockResponse);
 
-            Employees allEmployees = employeeDetailsService.getAllEmployees();
+            Employees allEmployees = employeeDetailsProvider.getAllEmployees();
 
             Assertions.assertEquals(allEmployees.getEmployeeList(), List.of(new Employee("1", "Tiger Nixon", 61, 320800)));
 
@@ -139,7 +139,7 @@ class EmployeeDetailsServiceTest {
                     .addHeader("content-type", "application/json")
                     .setResponseCode(200));
 
-            Optional<Employee> employeeById = employeeDetailsService.getEmployeeById("1");
+            Optional<Employee> employeeById = employeeDetailsProvider.getEmployeeById("1");
 
             Assertions.assertEquals(Optional.of(new Employee("1", "Foo Bar", 61, 320800)), employeeById);
         }

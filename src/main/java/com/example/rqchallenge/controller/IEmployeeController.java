@@ -31,5 +31,4 @@ public interface IEmployeeController {
 
     @DeleteMapping("/employees/{id}")
     ResponseEntity<DeleteEmployeeResponse> deleteEmployeeById(@PathVariable String id);
-
 }

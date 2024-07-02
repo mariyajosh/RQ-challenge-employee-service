@@ -6,26 +6,25 @@ import com.example.rqchallenge.model.web.request.CreateEmployeeRequest;
 import com.example.rqchallenge.model.web.response.DeleteEmployeeResponse;
 import com.example.rqchallenge.model.web.response.EmployeeName;
 import com.example.rqchallenge.model.web.response.TopNEmployeeNames;
-import com.example.rqchallenge.service.client.EmployeeDetailsService;
+import com.example.rqchallenge.service.client.EmployeeDetailsProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
 public class EmployeeService {
-    private EmployeeDetailsService employeeDetailsService;
+    private EmployeeDetailsProvider employeeDetailsProvider;
     public Employees getEmployees() {
-        return employeeDetailsService.getAllEmployees();
+        return employeeDetailsProvider.getAllEmployees();
     }
 
     public Employees getEmployeesByNameSearch(String searchToken) {
-        Employees employees = employeeDetailsService.getAllEmployees();
+        Employees employees = employeeDetailsProvider.getAllEmployees();
         List<Employee> employeeListByName = employees.getEmployeeList()
                 .stream().
                 filter(employee -> employee.getName().toLowerCase()
@@ -36,21 +35,21 @@ public class EmployeeService {
 
     public Optional<Employee> getEmployeesById(String id) {
 
-        return employeeDetailsService.getEmployeeById(id);
+        return employeeDetailsProvider.getEmployeeById(id);
     }
 
     public int getHighestSalaryOfEmployees() {
-        Employees employees = employeeDetailsService.getAllEmployees();
+        Employees employees = employeeDetailsProvider.getAllEmployees();
             return employees.getEmployeeList().stream()
                 .mapToInt(Employee::getSalary).max().getAsInt();
     }
 
     public String createEmployee(CreateEmployeeRequest createEmployeeRequest) {
-        return employeeDetailsService.createEmployee(createEmployeeRequest);
+        return employeeDetailsProvider.createEmployee(createEmployeeRequest);
     }
 
     public TopNEmployeeNames getTopNHighestEarningEmployee(int N) {
-        Employees employees = employeeDetailsService.getAllEmployees();
+        Employees employees = employeeDetailsProvider.getAllEmployees();
         List<EmployeeName> employeeNameList = employees.getEmployeeList().stream()
                 .sorted(Comparator.comparing(Employee::getSalary, Comparator.reverseOrder()))
                 .limit(N)
@@ -60,7 +59,7 @@ public class EmployeeService {
     }
 
     public DeleteEmployeeResponse deleteEmployee(String id) {
-        String deletionOperationStatus = employeeDetailsService.deleteEmployee(id);
+        String deletionOperationStatus = employeeDetailsProvider.deleteEmployee(id);
         return new DeleteEmployeeResponse(deletionOperationStatus);
     }
 }

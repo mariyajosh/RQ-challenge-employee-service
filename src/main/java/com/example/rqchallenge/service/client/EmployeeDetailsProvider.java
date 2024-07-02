@@ -2,9 +2,9 @@ package com.example.rqchallenge.service.client;
 
 
 import com.example.rqchallenge.config.properties.ExternalServiceResourceProperties;
-import com.example.rqchallenge.exception.constants.ErrorMessage;
 import com.example.rqchallenge.exception.ExternalServiceException;
 import com.example.rqchallenge.exception.ExternalServiceUnavailableException;
+import com.example.rqchallenge.exception.constants.ErrorMessage;
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
 import com.example.rqchallenge.model.client.DeleteEmployeeDto;
@@ -25,13 +25,12 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Component
 @AllArgsConstructor
 @Slf4j
-public class EmployeeDetailsService {
+public class EmployeeDetailsProvider {
     private final ExternalServiceResourceProperties externalServiceResourceProperties;
     private final RestTemplate restTemplate;
 

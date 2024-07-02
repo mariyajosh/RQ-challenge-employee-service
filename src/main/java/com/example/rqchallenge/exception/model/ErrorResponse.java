@@ -1,4 +1,4 @@
-package com.example.rqchallenge.exception;
+package com.example.rqchallenge.exception.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.rqchallenge.exception;
+package com.example.rqchallenge.exception.constants;
 
 public class ErrorMessage {
 

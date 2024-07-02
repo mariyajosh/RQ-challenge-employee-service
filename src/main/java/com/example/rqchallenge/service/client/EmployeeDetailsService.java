@@ -2,7 +2,7 @@ package com.example.rqchallenge.service.client;
 
 
 import com.example.rqchallenge.config.properties.ExternalServiceResourceProperties;
-import com.example.rqchallenge.exception.ErrorMessage;
+import com.example.rqchallenge.exception.constants.ErrorMessage;
 import com.example.rqchallenge.exception.ExternalServiceException;
 import com.example.rqchallenge.exception.ExternalServiceUnavailableException;
 import com.example.rqchallenge.model.business.Employee;

@@ -1,6 +1,5 @@
 package com.example.rqchallenge.controller;
 
-import com.example.rqchallenge.exception.EntityDoesNotExistException;
 import com.example.rqchallenge.model.web.response.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,7 @@ public interface IEmployeeController {
     @PostMapping("/employee")
     ResponseEntity<CreateEmployeeResponse> createEmployee(@RequestBody Map<String, Object> employeeInput);
 
-        @DeleteMapping("/employees/{id}")
-    ResponseEntity<DeleteEmployeeResponse> deleteEmployeeById(@PathVariable String id) throws EntityDoesNotExistException;
+    @DeleteMapping("/employees/{id}")
+    ResponseEntity<DeleteEmployeeResponse> deleteEmployeeById(@PathVariable String id);
 
 }

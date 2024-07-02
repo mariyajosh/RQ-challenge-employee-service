@@ -1,6 +1,5 @@
 package com.example.rqchallenge.service;
 
-import com.example.rqchallenge.exception.EntityDoesNotExistException;
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
 import com.example.rqchallenge.model.web.response.DeleteEmployeeResponse;
@@ -143,14 +142,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void shouldGetEntityDoesNotExistExceptionIdThereIsNoEmployeeExistToWhilePerformingDelete(){
-        Mockito.when(employeeDetailsService.getEmployeeById("1")).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(EntityDoesNotExistException.class, () -> employeeService.deleteEmployee("1"));
-    }
-
-    @Test
-    void shouldDeleteEmployeeSuccessfully() throws EntityDoesNotExistException {
+    void shouldDeleteEmployeeSuccessfully() {
         Mockito.when(employeeDetailsService.deleteEmployee("1")).thenReturn("Success");
         DeleteEmployeeResponse expectedResponse = new DeleteEmployeeResponse("Success");
 

@@ -1,6 +1,5 @@
 package com.example.rqchallenge.controller;
 
-import com.example.rqchallenge.exception.EntityDoesNotExistException;
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
 import com.example.rqchallenge.model.web.response.*;
@@ -58,7 +57,7 @@ public class EmployeeController implements IEmployeeController{
     }
 
     @Override
-    public ResponseEntity<DeleteEmployeeResponse> deleteEmployeeById(String id) throws EntityDoesNotExistException {
+    public ResponseEntity<DeleteEmployeeResponse> deleteEmployeeById(String id) {
         return ResponseEntity.ok(employeeService.deleteEmployee(id));
     }
 }

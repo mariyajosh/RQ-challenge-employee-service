@@ -6,14 +6,12 @@ import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,24 +52,6 @@ class EmployeeDetailsServiceTest {
         Employees allEmployees = employeeDetailsService.getAllEmployees();
 
         Assertions.assertEquals(allEmployees.getEmployeeList(), List.of(new Employee("1", "Tiger Nixon", 61, 320800)));
-    }
-
-    @Test
-    void shouldRetryIfThereIs503StatusFromExternalService(){
-        int port = mockWebServer.getPort();
-        Mockito.when(externalServiceResourceProperties.getBaseUrl()).thenReturn("http://localhost:"+port);
-        Mockito.when(externalServiceResourceProperties.getEmployees()).thenReturn("/employees");
-        MockResponse mockResponse = new MockResponse()
-                .addHeader("content-type", "application/json")
-                .setBody(sampleJsonBody())
-                .setResponseCode(200);
-        mockWebServer.enqueue(new MockResponse().setResponseCode(503));
-        mockWebServer.enqueue(mockResponse);
-
-        Employees allEmployees = employeeDetailsService.getAllEmployees();
-
-        Assertions.assertEquals(allEmployees.getEmployeeList(), List.of(new Employee("1", "Tiger Nixon", 61, 320800)));
-
     }
 
     @Test
@@ -121,6 +101,48 @@ class EmployeeDetailsServiceTest {
         Optional<Employee> employeeById = employeeDetailsService.getEmployeeById("1");
 
         Assertions.assertEquals(Optional.empty(), employeeById);
+    }
+    @Nested
+    @TestPropertySource(
+            properties = {
+                 "api.external-service.maxRetryAttempts=0L"
+            }
+    )
+    @DisplayName("Testing the retry mechanism")
+    class NoRetryCheck{
+        @Test
+        void shouldRetryIfThereIs503StatusFromExternalServiceWhileFetingEmployees(){
+            int port = mockWebServer.getPort();
+            Mockito.when(externalServiceResourceProperties.getBaseUrl()).thenReturn("http://localhost:"+port);
+            Mockito.when(externalServiceResourceProperties.getEmployees()).thenReturn("/employees");
+            MockResponse mockResponse = new MockResponse()
+                    .addHeader("content-type", "application/json")
+                    .setBody(sampleJsonBody())
+                    .setResponseCode(200);
+            mockWebServer.enqueue(new MockResponse().setResponseCode(503));
+            mockWebServer.enqueue(mockResponse);
+
+            Employees allEmployees = employeeDetailsService.getAllEmployees();
+
+            Assertions.assertEquals(allEmployees.getEmployeeList(), List.of(new Employee("1", "Tiger Nixon", 61, 320800)));
+
+        }
+
+        @Test
+        void shouldRetryIfThereIs429ResponseCodeWhileGettingEmployeeById(){
+            int port = mockWebServer.getPort();
+            Mockito.when(externalServiceResourceProperties.getBaseUrl()).thenReturn("http://localhost:"+port);
+            Mockito.when(externalServiceResourceProperties.getEmployeeById()).thenReturn("/employees/1");
+            mockWebServer.enqueue(new MockResponse().setResponseCode(429));
+            mockWebServer.enqueue(new MockResponse()
+                    .setBody(sampleEmployeeByIdResponse())
+                    .addHeader("content-type", "application/json")
+                    .setResponseCode(200));
+
+            Optional<Employee> employeeById = employeeDetailsService.getEmployeeById("1");
+
+            Assertions.assertEquals(Optional.of(new Employee("1", "Foo Bar", 61, 320800)), employeeById);
+        }
     }
 
     private String sampleJsonBody(){

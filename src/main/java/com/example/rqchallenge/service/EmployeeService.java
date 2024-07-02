@@ -1,6 +1,5 @@
 package com.example.rqchallenge.service;
 
-import com.example.rqchallenge.exception.EntityDoesNotExistException;
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
 import com.example.rqchallenge.model.web.response.DeleteEmployeeResponse;
@@ -59,7 +58,7 @@ public class EmployeeService {
         return new TopNEmployeeNames(employeeNameList);
     }
 
-    public DeleteEmployeeResponse deleteEmployee(String id) throws EntityDoesNotExistException {
+    public DeleteEmployeeResponse deleteEmployee(String id) {
         String deletionOperationStatus = employeeDetailsService.deleteEmployee(id);
         return new DeleteEmployeeResponse(deletionOperationStatus);
     }

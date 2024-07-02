@@ -11,6 +11,7 @@ import com.example.rqchallenge.model.client.DeleteEmployeeDto;
 import com.example.rqchallenge.model.client.EmployeeByIdDTO;
 import com.example.rqchallenge.model.client.EmployeeCreationDetailsDTO;
 import com.example.rqchallenge.model.client.EmployeesDTO;
+import com.example.rqchallenge.model.web.request.CreateEmployeeRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -68,10 +69,10 @@ public class EmployeeDetailsService {
     @Retryable(value = ExternalServiceUnavailableException.class,
             maxAttemptsExpression = "#{${api.external-service.maxRetryAttempts}}",
             backoff = @Backoff(delayExpression = "#{${api.external-service.retryDelay}}"))
-    public String createEmployee(Map<String, Object> employeeInput) {
+    public String createEmployee(CreateEmployeeRequest createEmployeeRequest) {
         String resourceUrl = externalServiceResourceProperties.getBaseUrl() + externalServiceResourceProperties.getCreateEmployee();
         try{
-            ResponseEntity<EmployeeCreationDetailsDTO> employeeCreationDetailsResponseEntity = restTemplate.postForEntity(resourceUrl, employeeInput, EmployeeCreationDetailsDTO.class);
+            ResponseEntity<EmployeeCreationDetailsDTO> employeeCreationDetailsResponseEntity = restTemplate.postForEntity(resourceUrl, createEmployeeRequest, EmployeeCreationDetailsDTO.class);
             EmployeeCreationDetailsDTO employeeCreationDetailsDTO = employeeCreationDetailsResponseEntity.getBody();
            return employeeCreationDetailsDTO.getStatus();
         }

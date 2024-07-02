@@ -2,6 +2,7 @@ package com.example.rqchallenge.controller;
 
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
+import com.example.rqchallenge.model.web.request.CreateEmployeeRequest;
 import com.example.rqchallenge.service.client.EmployeeDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -98,16 +99,25 @@ class EmployeeControllerTest {
     @Test
     void shouldReturn201ResponseWithEmployeeCreationStatus() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        HashMap<String, Object> employee = new HashMap<>();
-        employee.put("name", "Joe");
-        employee.put("age", "24");
-        employee.put("salary", "970273");
+        CreateEmployeeRequest employee = new CreateEmployeeRequest("Peter", "1", "78437");
         Mockito.when(employeeDetailsService.createEmployee(employee)).thenReturn("Success");
         mockMvc.perform(MockMvcRequestBuilders.post(EMPLOYEE_SERVICE_BASE_URL + CREATE_EMPLOYEE)
                         .content(objectMapper.writeValueAsString(employee))
                         .contentType("application/json"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status", is("Success")));
+    }
+
+    @Test
+    void shouldThrow400BadRequestIfAgeIsInvalid() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CreateEmployeeRequest employee = new CreateEmployeeRequest("", "-1", "78437");
+        Mockito.when(employeeDetailsService.createEmployee(employee)).thenReturn("Success");
+        mockMvc.perform(MockMvcRequestBuilders.post(EMPLOYEE_SERVICE_BASE_URL + CREATE_EMPLOYEE)
+                        .content(objectMapper.writeValueAsString(employee))
+                        .contentType("application/json"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorDetails.size()", is(2)));
     }
 
     @Test

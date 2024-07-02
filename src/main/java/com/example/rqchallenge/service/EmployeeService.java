@@ -2,6 +2,7 @@ package com.example.rqchallenge.service;
 
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
+import com.example.rqchallenge.model.web.request.CreateEmployeeRequest;
 import com.example.rqchallenge.model.web.response.DeleteEmployeeResponse;
 import com.example.rqchallenge.model.web.response.EmployeeName;
 import com.example.rqchallenge.model.web.response.TopNEmployeeNames;
@@ -44,8 +45,8 @@ public class EmployeeService {
                 .mapToInt(Employee::getSalary).max().getAsInt();
     }
 
-    public String createEmployee(Map<String, Object> employeeInput) {
-        return employeeDetailsService.createEmployee(employeeInput);
+    public String createEmployee(CreateEmployeeRequest createEmployeeRequest) {
+        return employeeDetailsService.createEmployee(createEmployeeRequest);
     }
 
     public TopNEmployeeNames getTopNHighestEarningEmployee(int N) {

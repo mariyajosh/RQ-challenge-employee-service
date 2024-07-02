@@ -2,6 +2,7 @@ package com.example.rqchallenge.controller;
 
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
+import com.example.rqchallenge.model.web.request.CreateEmployeeRequest;
 import com.example.rqchallenge.model.web.response.*;
 import com.example.rqchallenge.service.EmployeeService;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -51,8 +51,8 @@ public class EmployeeController implements IEmployeeController{
     }
 
     @Override
-    public ResponseEntity<CreateEmployeeResponse> createEmployee(Map<String, Object> employeeInput) {
-        String creationStatus = employeeService.createEmployee(employeeInput);
+    public ResponseEntity<CreateEmployeeResponse> createEmployee(CreateEmployeeRequest createEmployeeRequest) {
+        String creationStatus = employeeService.createEmployee(createEmployeeRequest);
         return new ResponseEntity<>(new CreateEmployeeResponse(creationStatus), HttpStatus.CREATED);
     }
 

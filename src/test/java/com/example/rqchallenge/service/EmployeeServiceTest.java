@@ -2,6 +2,7 @@ package com.example.rqchallenge.service;
 
 import com.example.rqchallenge.model.business.Employee;
 import com.example.rqchallenge.model.business.Employees;
+import com.example.rqchallenge.model.web.request.CreateEmployeeRequest;
 import com.example.rqchallenge.model.web.response.DeleteEmployeeResponse;
 import com.example.rqchallenge.model.web.response.EmployeeName;
 import com.example.rqchallenge.model.web.response.TopNEmployeeNames;
@@ -118,8 +119,9 @@ class EmployeeServiceTest {
     @Test
     void shouldGetSuccessStatusIfEmployeeCreatedSuccessFully(){
         Mockito.when(employeeDetailsService.createEmployee(any())).thenReturn("Success");
+        CreateEmployeeRequest employee = new CreateEmployeeRequest("Peter", "1", "78437");
 
-        String employeeCreationStatus = employeeService.createEmployee(new HashMap<>());
+        String employeeCreationStatus = employeeService.createEmployee(employee);
 
         Assertions.assertEquals("Success", employeeCreationStatus);
     }
